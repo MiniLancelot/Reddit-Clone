@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
@@ -20,11 +21,12 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
   }
 
   void createCommunity() {
-    ref.read(communityControllerProvider.notifier).createCommunity(
-      communityNameController.text.trim(), 
-      context,
-    );
-  }
+  String communityName = communityNameController.text.trim(); // Trim the input text
+  ref.read(communityControllerProvider.notifier).createCommunity(
+    communityName, 
+    context,
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,9 @@ class _CreateCommunityScreenState extends ConsumerState<CreateCommunityScreen> {
                 fillColor: Color(0xff191819),
               ),
               maxLength: 21,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9_]')), // Allow only alphanumeric characters and underscore
+              ],
             ),
             const SizedBox(height: 30),
             ElevatedButton(
