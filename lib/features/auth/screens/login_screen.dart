@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/core/common/sign_in_button.dart';
 import 'package:reddit_clone/core/constants/constants.dart';
+import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 
-
-class LoginScreen  extends StatelessWidget {
-  const LoginScreen ({super.key});
+class LoginScreen extends ConsumerWidget {
+  const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = ref.watch(authControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 70.0), // Adjust the padding as needed
+              padding: const EdgeInsets.only(
+                  left: 70.0), // Adjust the padding as needed
               child: Image.asset(
                 Constants.logoPath,
                 height: 40,
@@ -23,24 +27,24 @@ class LoginScreen  extends StatelessWidget {
             ),
           ],
         ),
-        actions:[
+        actions: [
           TextButton(
             onPressed: () {},
             child: const Text(
               'Skip',
               style: TextStyle(
-                 color: Colors.white,
-                fontWeight:FontWeight.bold,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
         ],
-      ) ,
-      body:  Column(
+      ),
+      body: isLoading ? const Loader() : Column(
         children: [
           const SizedBox(height: 30),
           const Text(
-            'Dive in to anything', 
+            'Dive in to anything',
             style: TextStyle(
               color: Colors.white,
               fontSize: 24,

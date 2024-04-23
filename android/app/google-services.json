@@ -12,7 +12,28 @@
           "package_name": "com.example.reddit_clone"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "901313753130-dhoukli52otn9i9m4bg9ap40i3rs76f4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reddit_clone",
+            "certificate_hash": "71bd857300c19620c4680ab6e3ca27541e492d74"
+          }
+        },
+        {
+          "client_id": "901313753130-fabrj9u8lg2qkm8mlsorlas9end7f71n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.reddit_clone",
+            "certificate_hash": "e5b1c7dfc36940da8a7680090dd6303b4fdb9988"
+          }
+        },
+        {
+          "client_id": "901313753130-mf4mk9n53hbidh3sb36hhtgltn9h9j8k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyA_aiLwGc_lAiqKwFrdAv2DWARhwrJ_Je8"
@@ -20,7 +41,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "901313753130-mf4mk9n53hbidh3sb36hhtgltn9h9j8k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "901313753130-gki8veaq9s3pp1eihnpn7vehfq18jmgt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.redditClone"
+              }
+            }
+          ]
         }
       }
     }
