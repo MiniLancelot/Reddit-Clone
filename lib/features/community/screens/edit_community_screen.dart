@@ -7,6 +7,7 @@ import 'package:reddit_clone/core/constants/constants.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/theme/pallete.dart'; // Import the package
 
 class EditCommunityScreen extends ConsumerStatefulWidget {
@@ -45,8 +46,18 @@ class _EditCommunityState extends ConsumerState<EditCommunityScreen> {
     }
   }
 
+  void save(Community community) {
+    ref.read(communityControllerProvider.notifier).editCommunity(
+          profileFile: profileFile,
+          bannerFile: bannerFile,
+          context: context,
+          community: community,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(communityControllerProvider);
     return ref.watch(getCommunityByNameProvider(widget.name)).when(
       data: (community) => Scaffold(
         backgroundColor: Colors.black,
@@ -55,12 +66,12 @@ class _EditCommunityState extends ConsumerState<EditCommunityScreen> {
           centerTitle: false,
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () => save(community),
               child: const Text('Save'),
             ),
           ],
         ),
-        body: Padding(
+        body: isLoading? const Loader() :Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
