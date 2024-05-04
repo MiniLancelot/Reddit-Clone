@@ -43,7 +43,8 @@ class ProfileDrawer extends ConsumerWidget {
             ),
             Switch.adaptive(
               value: true, 
-              onChanged: (val) => {}
+              onChanged: (val) => {},
+              activeColor: Colors.white,
             )
           ],
         ),

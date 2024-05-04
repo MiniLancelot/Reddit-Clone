@@ -67,7 +67,12 @@ class _EditCommunityState extends ConsumerState<EditCommunityScreen> {
           actions: [
             TextButton(
               onPressed: () => save(community),
-              child: const Text('Save'),
+              child: const Text(
+                'Save', 
+                style: TextStyle(
+                  color: Colors.white
+                ),
+              ),
             ),
           ],
         ),
