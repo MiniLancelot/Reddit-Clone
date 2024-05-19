@@ -119,7 +119,19 @@ class CommunityRepository {
   }
 
 
-  
+  Stream<List<Post>> getCommunityPosts(String name) {
+    return _posts.where('communityName', isEqualTo: name).orderBy('createdAt', descending: true).snapshots().map(
+          (event) => event.docs
+              .map(
+                (e) => Post.fromMap(
+                  e.data() as Map<String, dynamic>,
+                ),
+              )
+              .toList(),
+        );
+  }
+  CollectionReference get _posts => 
+      _firestore.collection(FirebaseConstants.postsCollection);
   CollectionReference get _communities =>
       _firestore.collection(FirebaseConstants.communitiesCollection);
 }
