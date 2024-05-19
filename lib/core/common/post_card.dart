@@ -12,8 +12,15 @@ class PostCard extends ConsumerWidget {
   const PostCard({super.key, required this.post});
 
   
-  void deletePost(WidgetRef ref) async {
-    ref.read(postControllerProvider.notifier).deletePost(post);
+  void deletePost(WidgetRef ref, BuildContext context) async {
+    ref.read(postControllerProvider.notifier).deletePost(post, context);
+  }
+  void upvotePost(WidgetRef ref) async {
+    ref.read(postControllerProvider.notifier).upvote(post);
+  }
+
+  void downvotePost(WidgetRef ref) async {
+    ref.read(postControllerProvider.notifier).downvote(post);
   }
 
   @override
@@ -82,7 +89,7 @@ class PostCard extends ConsumerWidget {
                             ),
                             if (post.uid == user.uid)
                               IconButton(
-                                onPressed: () => deletePost(ref),
+                                onPressed: () => deletePost(ref, context),
                                 icon: Icon(
                                   Icons.delete,
                                   color: Pallete.redColor,
@@ -109,9 +116,8 @@ class PostCard extends ConsumerWidget {
                             ),
                           ),
                         if (isTypeLink)
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.35,
-                            width: double.infinity,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 18),
                             child: AnyLinkPreview(displayDirection: UIDirection.uiDirectionHorizontal, link: post.link!,),
                           ),
                           if(isTypeText)
@@ -129,7 +135,7 @@ class PostCard extends ConsumerWidget {
                             Row(
                               children: [
                                 IconButton(
-                                  onPressed: (){}, 
+                                  onPressed: () => upvotePost(ref), 
                                   icon: Icon(
                                     Constants.up, 
                                     size: 30,
@@ -142,7 +148,7 @@ class PostCard extends ConsumerWidget {
                                   ),
 
                                 IconButton(
-                                  onPressed: (){}, 
+                                  onPressed: () => downvotePost(ref), 
                                   icon: Icon(
                                     Constants.down, 
                                     size: 30,
