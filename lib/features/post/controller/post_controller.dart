@@ -150,4 +150,8 @@ class PostController extends StateNotifier<bool> {
     }
     return Stream.value([]);
   }
+  void deletePost(Post post) async{
+    final res = await _postRepository.deletePost(post);
+    res.fold((l) => null, (r) => null);
+  }
 }
