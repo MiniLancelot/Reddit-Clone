@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:reddit_clone/features/post/repository/post_repository.dart';
 import 'package:reddit_clone/models/comment_model.dart';
 import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
+import 'package:reddit_clone/models/reply_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
@@ -36,6 +38,17 @@ final getPostByIdProvider = StreamProvider.family((ref, String postId) {
 final getPostCommentsProvider = StreamProvider.family((ref, String postId) {
   final PostController = ref.watch(postControllerProvider.notifier);
   return PostController.fetchPostComments(postId);
+});
+
+final getCommentByIdProvider = StreamProvider.family((ref, String commentId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getCommentById(commentId);
+});
+
+final getCommentRepliesProvider =
+    StreamProvider.family((ref, String commentId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchCommentReplies(commentId);
 });
 
 class PostController extends StateNotifier<bool> {
@@ -184,6 +197,10 @@ class PostController extends StateNotifier<bool> {
     return _postRepository.getPostById(postId);
   }
 
+  Stream<Comment> getCommentById(String commentId) {
+    return _postRepository.getCommentById(commentId);
+  }
+
   void addComment({
     required BuildContext context,
     required String text,
@@ -197,12 +214,35 @@ class PostController extends StateNotifier<bool> {
         createdAt: DateTime.now(),
         postId: post.id,
         username: user.name,
+        replyCount: 0,
         profilePic: user.profilePic);
     final res = await _postRepository.addComment(comment);
     res.fold((l) => showSnackBar(context, l.message), (r) => null);
   }
 
+  void addReply(
+      {required BuildContext context,
+      required String text,
+      required Comment comment}) async {
+    final user = _ref.read(userProvider)!;
+    String replyId = const Uuid().v1();
+    String postId = comment.postId;
+    Reply reply = Reply(
+        id: replyId,
+        text: text,
+        createdAt: DateTime.now(),
+        commentId: comment.id,
+        username: user.name,
+        profilePic: user.profilePic);
+    final res = await _postRepository.addReply(reply, postId);
+    res.fold((l) => showSnackBar(context, l.message), (r) => null);
+  }
+
   Stream<List<Comment>> fetchPostComments(String postId) {
     return _postRepository.getCommentsOfPost(postId);
+  }
+
+  Stream<List<Reply>> fetchCommentReplies(String commentId) {
+    return _postRepository.getRepliesOfComment(commentId);
   }
 }

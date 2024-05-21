@@ -1,40 +1,36 @@
-import 'dart:convert';
-
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
-class Comment {
+class Reply {
   final String id;
   final String text;
   final DateTime createdAt;
-  final String postId;
+  final String commentId;
   final String username;
-  final int replyCount;
   final String profilePic;
-  Comment({
+  Reply({
     required this.id,
     required this.text,
     required this.createdAt,
-    required this.postId,
+    required this.commentId,
     required this.username,
-    required this.replyCount,
     required this.profilePic,
   });
-  Comment copyWith({
+  
+
+  Reply copyWith({
     String? id,
     String? text,
     DateTime? createdAt,
-    String? postId,
+    String? commentId,
     String? username,
-    int? replyCount,
     String? profilePic,
   }) {
-    return Comment(
+    return Reply(
       id: id ?? this.id,
       text: text ?? this.text,
       createdAt: createdAt ?? this.createdAt,
-      postId: postId ?? this.postId,
+      commentId: commentId ?? this.commentId,
       username: username ?? this.username,
-      replyCount: replyCount ?? this.replyCount,
       profilePic: profilePic ?? this.profilePic,
     );
   }
@@ -44,41 +40,41 @@ class Comment {
       'id': id,
       'text': text,
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'postId': postId,
+      'commentId': commentId,
       'username': username,
-      'replyCount': replyCount,
       'profilePic': profilePic,
     };
   }
 
-  factory Comment.fromMap(Map<String, dynamic> map) {
-    return Comment(
+  factory Reply.fromMap(Map<String, dynamic> map) {
+    return Reply(
       id: map['id'] ?? '',
       text: map['text'] ?? '',
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
-      postId: map['postId'] ?? '',
-      replyCount: map['replyCount'] ?.toInt() ?? 0,
+      commentId: map['commentId'] ?? '',
       username: map['username'] ?? '',
       profilePic: map['profilePic'] ?? '',
     );
   }
 
+  // String toJson() => json.encode(toMap());
+
+  // factory Reply.fromJson(String source) => Reply.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'Comment(id: $id, text: $text, createdAt: $createdAt, postId: $postId, username: $username, replyCount: $replyCount, profilePic: $profilePic)';
+    return 'Reply(id: $id, text: $text, createdAt: $createdAt, commentId: $commentId, username: $username, profilePic: $profilePic)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
   
-    return other is Comment &&
+    return other is Reply &&
       other.id == id &&
       other.text == text &&
       other.createdAt == createdAt &&
-      other.postId == postId &&
-      other.replyCount == replyCount &&
+      other.commentId == commentId &&
       other.username == username &&
       other.profilePic == profilePic;
   }
@@ -88,9 +84,8 @@ class Comment {
     return id.hashCode ^
       text.hashCode ^
       createdAt.hashCode ^
-      postId.hashCode ^
+      commentId.hashCode ^
       username.hashCode ^
-      replyCount.hashCode ^
       profilePic.hashCode;
   }
 }
