@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
@@ -24,6 +25,7 @@ class UserProfileScreen extends ConsumerWidget {
       body: ref.watch(getUserDataProvider(uid)).when(
             data: (user) => NestedScrollView(
                 headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  final currentUserUid = FirebaseAuth.instance.currentUser?.uid;
                   return [
                     SliverAppBar(
                       expandedHeight: 250,
@@ -52,18 +54,20 @@ class UserProfileScreen extends ConsumerWidget {
                           Container(
                             alignment: Alignment.bottomLeft,
                             padding: const EdgeInsets.all(20),
-                            child: TextButton(
-                            onPressed: () => navigateToEditUser(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 25),
-                            ),
-                            child: const Text('Edit Profile'),
-                          ),
+                            child: currentUserUid == user.uid
+                            ? TextButton(
+                                onPressed: () => navigateToEditUser(context),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25),
+                                ),
+                                child: const Text('Edit Profile'),
+                              )
+                            : Container(),
                           ),
                           
                         ],
