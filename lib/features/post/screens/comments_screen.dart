@@ -35,6 +35,7 @@ class _CommentsScreenState extends ConsumerState<CommentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
       body: ref.watch(getPostByIdProvider(widget.postId)).when(
             data: (data) {
