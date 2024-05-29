@@ -80,7 +80,7 @@ class _CommentCardState extends ConsumerState<CommentCard> {
                 },
                 icon: const Icon(Icons.reply),
               ),
-              const Text('Reply-'),
+              const Text('Reply - '),
               Text('${widget.comment.replyCount ?? 0} replies')
             ],
           ),
@@ -99,8 +99,8 @@ class _CommentCardState extends ConsumerState<CommentCard> {
                       border: InputBorder.none,
                     ),
                   ),
-                  SizedBox(
-                    height: 200, // Adjust the height as needed
+                  Container(
+                    // height: 200, 
                     child: ref.watch(getCommentRepliesProvider(widget.comment.id)).when(
                           data: (data) {
                             return ListView.builder(

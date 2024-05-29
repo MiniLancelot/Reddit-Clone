@@ -16,9 +16,32 @@ class PostCard extends ConsumerWidget {
   final Post post;
   const PostCard({super.key, required this.post});
 
-  void deletePost(WidgetRef ref, BuildContext context) async {
-    ref.read(postControllerProvider.notifier).deletePost(post, context);
-  }
+  void deletePost(WidgetRef ref, BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirm Delete'),
+        content: const Text('Are you sure you want to delete this post?'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Delete'),
+            onPressed: () async {
+               ref.read(postControllerProvider.notifier).deletePost(post, context);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
   void upvotePost(WidgetRef ref) async {
     ref.read(postControllerProvider.notifier).upvote(post);
