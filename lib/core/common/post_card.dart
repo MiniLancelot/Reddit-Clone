@@ -17,31 +17,33 @@ class PostCard extends ConsumerWidget {
   const PostCard({super.key, required this.post});
 
   void deletePost(WidgetRef ref, BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this post?'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Delete'),
-            onPressed: () async {
-               ref.read(postControllerProvider.notifier).deletePost(post, context);
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Delete'),
+          content: const Text('Are you sure you want to delete this post?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete'),
+              onPressed: () async {
+                ref
+                    .read(postControllerProvider.notifier)
+                    .deletePost(post, context);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void upvotePost(WidgetRef ref) async {
     ref.read(postControllerProvider.notifier).upvote(post);
@@ -120,13 +122,13 @@ class PostCard extends ConsumerWidget {
                                         ),
                                       ),
                                       GestureDetector(
-                                        onTap: () => navigateToUser(context),
+                                          onTap: () => navigateToUser(context),
                                           child: Text(
-                                        'u/${post.username}',
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ))
+                                            'u/${post.username}',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                            ),
+                                          ))
                                     ],
                                   ),
                                 ),
@@ -151,13 +153,20 @@ class PostCard extends ConsumerWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             )),
+                        const SizedBox(height: 10),
                         if (isTypeImage)
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.35,
                             width: double.infinity,
-                            child: Image.network(
-                              post.link!,
-                              fit: BoxFit.cover,
+                            child: Container(
+                              margin: const EdgeInsets.only( right: 15),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.network(
+                                  post.link!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ),
                         if (isTypeLink)
@@ -230,7 +239,8 @@ class PostCard extends ConsumerWidget {
                                   data: (date) {
                                     if (date.mods.contains(user.uid)) {
                                       return IconButton(
-                                        onPressed: () => deletePost(ref, context),
+                                        onPressed: () =>
+                                            deletePost(ref, context),
                                         icon: const Icon(
                                           Icons.admin_panel_settings,
                                         ),
