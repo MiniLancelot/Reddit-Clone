@@ -40,6 +40,7 @@ class UserProfileScreen extends ConsumerWidget {
                             ),
                           ),
                           Container(
+                            margin: const EdgeInsets.only(top: 65, left: 15),
                             alignment: Alignment.bottomLeft,
                             padding: const EdgeInsets.all(20).copyWith(bottom: 70),
                               child: Align(
