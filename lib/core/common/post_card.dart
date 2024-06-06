@@ -16,6 +16,10 @@ class PostCard extends ConsumerWidget {
   final Post post;
   const PostCard({super.key, required this.post});
 
+  void navigateToType(BuildContext context) {
+    Routemaster.of(context).push('/edit-post/${post.id}');
+  }
+
   void deletePost(WidgetRef ref, BuildContext context) {
     showDialog(
       context: context,
@@ -44,6 +48,8 @@ class PostCard extends ConsumerWidget {
       },
     );
   }
+
+  void editPost(WidgetRef ref, BuildContext context) {}
 
   void upvotePost(WidgetRef ref) async {
     ref.read(postControllerProvider.notifier).upvote(post);
@@ -135,13 +141,25 @@ class PostCard extends ConsumerWidget {
                               ],
                             ),
                             if (post.uid == user.uid)
-                              IconButton(
-                                onPressed: () => deletePost(ref, context),
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Pallete.redColor,
-                                ),
-                              ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () =>
+                                        navigateToType(context),
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Pallete.whiteColor,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () => deletePost(ref, context),
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Pallete.redColor,
+                                    ),
+                                  ),
+                                ],
+                              )
                           ],
                         ),
                         Padding(
@@ -159,7 +177,7 @@ class PostCard extends ConsumerWidget {
                             height: MediaQuery.of(context).size.height * 0.35,
                             width: double.infinity,
                             child: Container(
-                              margin: const EdgeInsets.only( right: 15),
+                              margin: const EdgeInsets.only(right: 15),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(

@@ -98,6 +98,16 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
+  void updateTextPost(BuildContext context, Post post) async {
+    state = true;
+    final res = await _postRepository.addPost(post);
+    state = false;
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, 'Updated Successfully!');
+      Routemaster.of(context).pop();
+    });
+  }
+
   void shareLinkPost({
     required BuildContext context,
     required String title,
