@@ -69,13 +69,13 @@ class PostRepository {
   }
 
   void upvote(Post post, String userId, UserModel postUser) async {
+    int currentKarma = postUser.karma;
     if (post.downvotes.contains(userId)) {
       _posts.doc(post.id).update({
         'downvotes': FieldValue.arrayRemove([userId]),
       });
-      _users
-          .doc(post.uid)
-          .update({'karma': postUser.karma + 3});
+      currentKarma = currentKarma - UserKarma.downvote.karma;
+      // _users.doc(post.uid).update({'karma': postUser.karma + 3});
     }
 
     if (post.upvotes.contains(userId)) {
@@ -84,25 +84,25 @@ class PostRepository {
       });
       _users
           .doc(post.uid)
-          .update({'karma': postUser.karma - UserKarma.upvote.karma});
+          .update({'karma': currentKarma - UserKarma.upvote.karma});
     } else {
       _posts.doc(post.id).update({
         'upvotes': FieldValue.arrayUnion([userId]),
       });
       _users
           .doc(post.uid)
-          .update({'karma': postUser.karma + UserKarma.upvote.karma});
+          .update({'karma': currentKarma + UserKarma.upvote.karma});
     }
   }
 
   void downvote(Post post, String userId, UserModel postUser) async {
+    int currentKarma = postUser.karma;
     if (post.upvotes.contains(userId)) {
       _posts.doc(post.id).update({
         'upvotes': FieldValue.arrayRemove([userId]),
       });
-      _users
-          .doc(post.uid)
-          .update({'karma': postUser.karma - 1});
+      currentKarma = currentKarma - UserKarma.upvote.karma;
+      // _users.doc(post.uid).update({'karma': currentKarma});
     }
 
     if (post.downvotes.contains(userId)) {
@@ -111,14 +111,14 @@ class PostRepository {
       });
       _users
           .doc(post.uid)
-          .update({'karma': postUser.karma - UserKarma.downvote.karma});
+          .update({'karma': currentKarma - UserKarma.downvote.karma});
     } else {
       _posts.doc(post.id).update({
         'downvotes': FieldValue.arrayUnion([userId]),
       });
       _users
           .doc(post.uid)
-          .update({'karma': postUser.karma + UserKarma.downvote.karma});
+          .update({'karma': currentKarma + UserKarma.downvote.karma});
     }
   }
 
