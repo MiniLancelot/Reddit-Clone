@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:reddit_clone/core/constants/firebase_constants.dart';
+import 'package:reddit_clone/core/enums/enums.dart';
 import 'package:reddit_clone/core/failure.dart';
 import 'package:reddit_clone/core/providers/firebase_provider.dart';
 import 'package:reddit_clone/core/type_defs.dart';
@@ -14,10 +17,19 @@ final userProfileRepositoryProvider = Provider((ref) {
 
 class UserProfileRepository {
   final FirebaseFirestore _firestore;
-  UserProfileRepository({required FirebaseFirestore firestore}) : _firestore = firestore;
+  UserProfileRepository({required FirebaseFirestore firestore})
+      : _firestore = firestore;
 
-  CollectionReference get _users => _firestore.collection(FirebaseConstants.usersCollection);
-  CollectionReference get _posts => _firestore.collection(FirebaseConstants.postsCollection);
+  CollectionReference get _users =>
+      _firestore.collection(FirebaseConstants.usersCollection);
+  CollectionReference get _posts =>
+      _firestore.collection(FirebaseConstants.postsCollection);
+  
+  Stream<UserModel> getUserById(String uid) {
+        return _users.doc(uid).snapshots().map(
+          (event) => UserModel.fromMap(event.data() as Map<String, dynamic>),
+        );
+  }
 
   FutureVoid editProfile(UserModel user) async {
     try {
@@ -30,7 +42,11 @@ class UserProfileRepository {
   }
 
   Stream<List<Post>> getUserPosts(String uid) {
-    return _posts.where('uid', isEqualTo: uid).orderBy('createdAt', descending: true).snapshots().map(
+    return _posts
+        .where('uid', isEqualTo: uid)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
           (event) => event.docs
               .map(
                 (e) => Post.fromMap(
@@ -40,4 +56,5 @@ class UserProfileRepository {
               .toList(),
         );
   }
+
 }
