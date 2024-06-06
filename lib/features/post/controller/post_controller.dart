@@ -142,6 +142,16 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
+  void updateLinkPost(BuildContext context, Post post) async {
+    state = true;
+    final res = await _postRepository.addPost(post);
+    state = false;
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, 'Updated Successfully!');
+      Routemaster.of(context).pop();
+    });
+  }
+
   void shareImagePost({
     required BuildContext context,
     required String title,
@@ -168,6 +178,30 @@ class PostController extends StateNotifier<bool> {
         type: 'image',
         createdAt: DateTime.now(),
         awards: [],
+        link: r,
+      );
+
+      final res = await _postRepository.addPost(post);
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, 'Posted Successfully!');
+        Routemaster.of(context).pop();
+      });
+    });
+  }
+  void updateImagePost({
+    required BuildContext context,
+    required Post data,
+    required String title,
+    required File? file,
+  }) async {
+    state = true;
+    final imageRes = await _storageRepository.storeFile(
+        path: 'posts/${data.communityName}', id: data.id, file: file);
+
+    imageRes.fold((l) => showSnackBar(context, l.message), (r) async {
+      final Post post = data.copyWith(
+        title: title,
         link: r,
       );
 

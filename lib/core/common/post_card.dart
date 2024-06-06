@@ -16,7 +16,7 @@ class PostCard extends ConsumerWidget {
   final Post post;
   const PostCard({super.key, required this.post});
 
-  void navigateToType(BuildContext context) {
+  void editPost(BuildContext context) {
     Routemaster.of(context).push('/edit-post/${post.id}');
   }
 
@@ -48,8 +48,6 @@ class PostCard extends ConsumerWidget {
       },
     );
   }
-
-  void editPost(WidgetRef ref, BuildContext context) {}
 
   void upvotePost(WidgetRef ref) async {
     ref.read(postControllerProvider.notifier).upvote(post);
@@ -145,7 +143,7 @@ class PostCard extends ConsumerWidget {
                                 children: [
                                   IconButton(
                                     onPressed: () =>
-                                        navigateToType(context),
+                                        editPost(context),
                                     icon: const Icon(
                                       Icons.edit,
                                       color: Pallete.whiteColor,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loader.dart';
+import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/post/controller/post_controller.dart';
 import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
@@ -35,11 +36,22 @@ class _EditPostTypeScreenState extends ConsumerState<EditPostScreen> {
     linkController.dispose();
   }
 
+  void selectBannerImage() async {
+    final res = await pickImage();
+
+    if (res != null) {
+      setState(() {
+        bannerFile = File(res.files.first.path!);
+      });
+    }
+  }
+
   void initializeControllersWithData(data) {
     if (!isDataLoaded) {
       titleController.text = data.title ?? '';
       descriptionController.text = data.description ?? '';
       linkController.text = data.link ?? '';
+      bannerFile = File(data.link) ?? null;
       setState(() {
         isDataLoaded = true;
       });
@@ -54,6 +66,17 @@ class _EditPostTypeScreenState extends ConsumerState<EditPostScreen> {
       ref
           .read(postControllerProvider.notifier)
           .updateTextPost(context, updatedPost);
+    } else if (data.type == 'link' &&
+        titleController.text.isNotEmpty &&
+        linkController.text.isNotEmpty) {
+      Post updatedPost = data.copyWith(
+          title: titleController.text.trim(), 
+          link: linkController.text.trim());
+      ref
+          .read(postControllerProvider.notifier)
+          .updateLinkPost(context, updatedPost);
+    } else {
+      showSnackBar(context, 'Please enter all the fields');
     }
   }
 
@@ -131,16 +154,16 @@ class _EditPostTypeScreenState extends ConsumerState<EditPostScreen> {
                                 ),
                                 maxLines: 5,
                               ),
-                            // if (isTypeLink)
-                            //   TextField(
-                            //     controller: linkController,
-                            //     decoration: const InputDecoration(
-                            //       filled: true,
-                            //       hintText: 'Enter Link here',
-                            //       border: InputBorder.none,
-                            //       contentPadding: EdgeInsets.all(18),
-                            //     ),
-                            //   ),
+                            if (isTypeLink)
+                              TextField(
+                                controller: linkController,
+                                decoration: const InputDecoration(
+                                  filled: true,
+                                  hintText: 'Enter Link here',
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.all(18),
+                                ),
+                              ),
                             const SizedBox(
                               height: 5,
                             ),
