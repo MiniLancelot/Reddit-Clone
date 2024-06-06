@@ -3,14 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reddit_clone/core/enums/enums.dart';
 import 'package:reddit_clone/core/providers/storage_repository_provider.dart';
 import 'package:reddit_clone/core/utils.dart';
 import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/post/repository/post_repository.dart';
+import 'package:reddit_clone/features/user_profile/controller/user_profile_controller.dart';
 import 'package:reddit_clone/models/comment_model.dart';
 import 'package:reddit_clone/models/community_model.dart';
 import 'package:reddit_clone/models/post_model.dart';
 import 'package:reddit_clone/models/reply_model.dart';
+import 'package:reddit_clone/models/user_model.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uuid/uuid.dart';
 
@@ -91,9 +94,20 @@ class PostController extends StateNotifier<bool> {
     );
 
     final res = await _postRepository.addPost(post);
+
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted Successfully!');
+      Routemaster.of(context).pop();
+    });
+  }
+
+  void updateTextPost(BuildContext context, Post post) async {
+    state = true;
+    final res = await _postRepository.addPost(post);
+    state = false;
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, 'Updated Successfully!');
       Routemaster.of(context).pop();
     });
   }
@@ -128,6 +142,16 @@ class PostController extends StateNotifier<bool> {
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Posted Successfully!');
+      Routemaster.of(context).pop();
+    });
+  }
+
+  void updateLinkPost(BuildContext context, Post post) async {
+    state = true;
+    final res = await _postRepository.addPost(post);
+    state = false;
+    res.fold((l) => showSnackBar(context, l.message), (r) {
+      showSnackBar(context, 'Updated Successfully!');
       Routemaster.of(context).pop();
     });
   }
@@ -170,6 +194,31 @@ class PostController extends StateNotifier<bool> {
     });
   }
 
+  void updateImagePost({
+    required BuildContext context,
+    required Post data,
+    required String title,
+    required File? file,
+  }) async {
+    state = true;
+    final imageRes = await _storageRepository.storeFile(
+        path: 'posts/${data.communityName}', id: data.id, file: file);
+
+    imageRes.fold((l) => showSnackBar(context, l.message), (r) async {
+      final Post post = data.copyWith(
+        title: title,
+        link: r,
+      );
+
+      final res = await _postRepository.addPost(post);
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, 'Posted Successfully!');
+        Routemaster.of(context).pop();
+      });
+    });
+  }
+
   Stream<List<Post>> fetchUserPosts(List<Community> communities) {
     if (communities.isNotEmpty) {
       return _postRepository.fetchUserPosts(communities);
@@ -179,18 +228,19 @@ class PostController extends StateNotifier<bool> {
 
   void deletePost(Post post, BuildContext context) async {
     final res = await _postRepository.deletePost(post);
+
     res.fold(
         (l) => null, (r) => showSnackBar(context, "Post Deleted Successfully"));
   }
 
-  void upvote(Post post) async {
-    final uid = _ref.read(userProvider)!.uid;
-    _postRepository.upvote(post, uid);
+  void upvote(Post post, UserModel postUser) async {
+    final userId = _ref.read(userProvider)!.uid;
+    _postRepository.upvote(post, userId, postUser);
   }
 
-  void downvote(Post post) async {
-    final uid = _ref.read(userProvider)!.uid;
-    _postRepository.downvote(post, uid);
+  void downvote(Post post, UserModel postUser) async {
+    final userId = _ref.read(userProvider)!.uid;
+    _postRepository.downvote(post, userId, postUser);
   }
 
   Stream<Post> getPostById(String postId) {
