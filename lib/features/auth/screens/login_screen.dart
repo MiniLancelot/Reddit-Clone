@@ -27,18 +27,18 @@ class LoginScreen extends ConsumerWidget {
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              'Skip',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   TextButton(
+        //     onPressed: () {},
+        //     child: const Text(
+        //       'Skip',
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: isLoading ? const Loader() : Column(
         children: [
