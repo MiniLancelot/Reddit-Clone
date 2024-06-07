@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loader.dart';
+import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 // import 'package:reddit_clone/features/post/screens/reply_screen.dart';
 import 'package:reddit_clone/features/post/controller/post_controller.dart';
 import 'package:reddit_clone/features/post/widgets/reply_card.dart';
@@ -37,6 +38,8 @@ class _CommentCardState extends ConsumerState<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userProvider)!;
+    final isGuest = !user.isAuthenticated;
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 10,
@@ -90,6 +93,7 @@ class _CommentCardState extends ConsumerState<CommentCard> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (!isGuest)
                   TextField(
                     onSubmitted: (val) => addReply(widget.comment),
                     controller: replyController,

@@ -78,6 +78,8 @@ class PostCard extends ConsumerWidget {
     final isTypeLink = post.type == 'link';
     final user = ref.watch(userProvider)!;
     final currentTheme = ref.watch(themeNotifierProvider);
+
+    final isGuest = !user.isAuthenticated;
     return ref.watch(getUserByIdProvider(post.uid)).when(
       data: (postUser) {
         return Column(
@@ -211,7 +213,7 @@ class PostCard extends ConsumerWidget {
                                 Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () => upvotePost(ref, postUser),
+                                      onPressed: () => isGuest ? () {} : upvotePost(ref, postUser),
                                       icon: Icon(
                                         Constants.up,
                                         size: 30,
@@ -225,7 +227,7 @@ class PostCard extends ConsumerWidget {
                                       style: const TextStyle(fontSize: 17),
                                     ),
                                     IconButton(
-                                        onPressed: () => downvotePost(ref, postUser),
+                                        onPressed: () => isGuest ? () {} : downvotePost(ref, postUser),
                                         icon: Icon(
                                           Constants.down,
                                           size: 30,
