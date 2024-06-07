@@ -14,8 +14,9 @@ class HomeScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
 }
-  class _HomeScreenState extends ConsumerState<HomeScreen>{
-    int _page = 0; 
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  int _page = 0;
 
   void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
@@ -32,7 +33,7 @@ class HomeScreen extends ConsumerStatefulWidget {
   }
 
   @override
-  Widget build(BuildContext context ) {
+  Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
     final currentTheme = ref.watch(themeNotifierProvider);
     return Scaffold(
@@ -53,16 +54,14 @@ class HomeScreen extends ConsumerStatefulWidget {
             },
             icon: const Icon(Icons.search),
           ),
-          Builder(
-            builder: (context) {
-              return IconButton(
-                icon: CircleAvatar(
-                  backgroundImage: NetworkImage(user.profilePic),
-                ),
-                onPressed: () => displayEndDrawer(context),
-              );
-            }
-          ),
+          Builder(builder: (context) {
+            return IconButton(
+              icon: CircleAvatar(
+                backgroundImage: NetworkImage(user.profilePic),
+              ),
+              onPressed: () => displayEndDrawer(context),
+            );
+          }),
         ],
       ),
       body: Constants.tabWidgets[_page],
@@ -81,10 +80,9 @@ class HomeScreen extends ConsumerStatefulWidget {
             label: '',
           ),
         ],
-        onTap: onPageChanged ,
+        onTap: onPageChanged,
         currentIndex: _page,
       ),
     );
   }
 }
-

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reddit_clone/core/common/error_text.dart';
 import 'package:reddit_clone/core/common/loader.dart';
 import 'package:reddit_clone/core/utils.dart';
+import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 import 'package:reddit_clone/features/community/controller/community_controller.dart';
 import 'package:reddit_clone/features/post/controller/post_controller.dart';
 import 'package:reddit_clone/models/community_model.dart';
@@ -88,6 +89,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     final isTypeLink = widget.type == 'link';
     final currentTheme = ref.watch(themeNotifierProvider);
     final isLoading = ref.watch(postControllerProvider);
+    final user = ref.watch(userProvider)!;
     return Scaffold(
         appBar: AppBar(
           title: Text('Post ${widget.type}'),
@@ -98,100 +100,102 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
             ),
           ],
         ),
-        body: isLoading ? const Loader() : Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  filled: true,
-                  hintText: 'Enter Title here',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(18),
-                ),
-                maxLength: 30,
-              ),
-              const SizedBox(height: 10),
-              if (isTypeImage)
-                GestureDetector(
-                  onTap: selectBannerImage,
-                  child: DottedBorder(
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(10),
-                    dashPattern: const [10, 4],
-                    strokeCap: StrokeCap.round,
-                    color: currentTheme.textTheme.bodyText2!.color!,
-                    child: Container(
-                        width: double.infinity,
-                        height: 150,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
+        body: isLoading
+            ? const Loader()
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        filled: true,
+                        hintText: 'Enter Title here',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(18),
+                      ),
+                      maxLength: 30,
+                    ),
+                    const SizedBox(height: 10),
+                    if (isTypeImage)
+                      GestureDetector(
+                        onTap: selectBannerImage,
+                        child: DottedBorder(
+                          borderType: BorderType.RRect,
+                          radius: const Radius.circular(10),
+                          dashPattern: const [10, 4],
+                          strokeCap: StrokeCap.round,
+                          color: currentTheme.textTheme.bodyText2!.color!,
+                          child: Container(
+                              width: double.infinity,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: bannerFile != null
+                                  ? Image.file(bannerFile!)
+                                  : const Center(
+                                      child: Icon(
+                                        Icons.camera_alt_outlined,
+                                        size: 40,
+                                      ),
+                                    )),
                         ),
-                        child: bannerFile != null
-                            ? Image.file(bannerFile!)
-                            : const Center(
-                                child: Icon(
-                                  Icons.camera_alt_outlined,
-                                  size: 40,
-                                ),
-                              )),
-                  ),
-                ),
-              if (isTypeText)
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(
-                    filled: true,
-                    hintText: 'Enter Description here',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(18),
-                  ),
-                  maxLines: 5,
-                ),
-              if (isTypeLink)
-                TextField(
-                  controller: linkController,
-                  decoration: const InputDecoration(
-                    filled: true,
-                    hintText: 'Enter Link here',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(18),
-                  ),
-                ),
-              const SizedBox(
-                height: 5,
-              ),
-              const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text('Select Community')),
-              ref.watch(userCommunitiesProvider).when(
-                    data: (data) {
-                      communities = data;
+                      ),
+                    if (isTypeText)
+                      TextField(
+                        controller: descriptionController,
+                        decoration: const InputDecoration(
+                          filled: true,
+                          hintText: 'Enter Description here',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(18),
+                        ),
+                        maxLines: 5,
+                      ),
+                    if (isTypeLink)
+                      TextField(
+                        controller: linkController,
+                        decoration: const InputDecoration(
+                          filled: true,
+                          hintText: 'Enter Link here',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(18),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text('Select Community')),
+                    ref.watch(userCommunitiesProvider(user.uid)).when(
+                          data: (data) {
+                            communities = data;
 
-                      if (data.isEmpty) {
-                        return const SizedBox();
-                      }
+                            if (data.isEmpty) {
+                              return const SizedBox();
+                            }
 
-                      return DropdownButton(
-                        value: selectedCommunity ?? data[0],
-                        items: data
-                            .map((e) =>
-                                DropdownMenuItem(value: e, child: Text(e.name)))
-                            .toList(),
-                        onChanged: (val) {
-                          setState(() {
-                            selectedCommunity = val;
-                          });
-                        },
-                      );
-                    },
-                    error: (error, StackTrace) =>
-                        ErrorText(error: error.toString()),
-                    loading: () => const Loader(),
-                  )
-            ],
-          ),
-        ));
+                            return DropdownButton(
+                              value: selectedCommunity ?? data[0],
+                              items: data
+                                  .map((e) => DropdownMenuItem(
+                                      value: e, child: Text(e.name)))
+                                  .toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  selectedCommunity = val;
+                                });
+                              },
+                            );
+                          },
+                          error: (error, StackTrace) =>
+                              ErrorText(error: error.toString()),
+                          loading: () => const Loader(),
+                        )
+                  ],
+                ),
+              ));
   }
 }
