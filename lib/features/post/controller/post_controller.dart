@@ -108,7 +108,7 @@ class PostController extends StateNotifier<bool> {
 
   void updateTextPost(BuildContext context, Post post) async {
     state = true;
-    final res = await _postRepository.addPost(post);
+    final res = await _postRepository.updatePost(post);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Updated Successfully!');
@@ -152,7 +152,7 @@ class PostController extends StateNotifier<bool> {
 
   void updateLinkPost(BuildContext context, Post post) async {
     state = true;
-    final res = await _postRepository.addPost(post);
+    final res = await _postRepository.updatePost(post);
     state = false;
     res.fold((l) => showSnackBar(context, l.message), (r) {
       showSnackBar(context, 'Updated Successfully!');
@@ -214,7 +214,7 @@ class PostController extends StateNotifier<bool> {
         link: r,
       );
 
-      final res = await _postRepository.addPost(post);
+      final res = await _postRepository.updatePost(post);
       state = false;
       res.fold((l) => showSnackBar(context, l.message), (r) {
         showSnackBar(context, 'Posted Successfully!');
