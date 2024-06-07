@@ -9,6 +9,10 @@ import 'package:reddit_clone/features/auth/controller/auth_controller.dart';
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
+  void signInAsGuest(WidgetRef ref, BuildContext context) {
+    ref.read(authControllerProvider.notifier).signInAsGuest(context);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = ref.watch(authControllerProvider);
@@ -18,8 +22,7 @@ class LoginScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 70.0), // Adjust the padding as needed
+              padding: const EdgeInsets.only(), // Adjust edthe padding as need
               child: Image.asset(
                 Constants.logoPath,
                 height: 40,
@@ -27,18 +30,18 @@ class LoginScreen extends ConsumerWidget {
             ),
           ],
         ),
-        // actions: [
-        //   TextButton(
-        //     onPressed: () {},
-        //     child: const Text(
-        //       'Skip',
-        //       style: TextStyle(
-        //         color: Colors.white,
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        //     ),
-        //   ),
-        // ],
+        actions: [
+          TextButton(
+            onPressed: () => signInAsGuest(ref, context),
+            child: const Text(
+              'Skip',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
       body: isLoading ? const Loader() : Column(
         children: [
